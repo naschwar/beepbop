@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./mystylesheet.css"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>beepbop</title>
+  </head>
+  <body>
+      <header>
+        <h1>Beep Bop</h1>
+      </header>
+      <section id = "ui">
+        <div class = controls>
+          <div id = "playCtrl">
+            <button class="fa fa-play" id="playBtn" onclick="toggle()"></button>
+          </div>
+          <div class="miscCtrl">
+            <button id = "newBtn" onmouseover="showNewText()" onmouseout="hideNewText()" onclick="showNewAudioForm()">new</button>
+            <div id = "new" onclick="showNewAudioForm()">new audio</div>
+            <input type="range" min="100" max="300" value="200" class="level" id="tempoEnabled" oninput="updateTempo(this.value);">
+            <button id = "expandBtn" onmouseover="showExpandText()" onmouseout="hideExpandText()" onclick="expand()">+</button>
+            <div id = "extend" onclick="expand()">extend</div>
+            <button id="clearBtn" onclick="clearPlaying()">clear</button>
+          </div>
+        </div> 
+        <div class = "container">
+          <div id="groups-container">
+          <div class = "pads-group toms">
+            <div class="name">toms</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="tomsLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/snare.wav" class="sound"></audio>
+          </div>
+          <div class="pads-group claps">
+            <div class="name">claps</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="clapsLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/clap.wav" class="sound"></audio>
+          </div>
+          <div class="pads-group kicks">
+            <div class="name">kicks</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="kicksLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/kick.wav" class="sound"></audio>
+          </div>
+          <div class="pads-group open-hats">
+            <div class="name">open hats</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="open-hatsLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/openhat.wav" class="sound"></audio>
+          </div>
+          <div class="pads-group booms">
+            <div class="name">booms</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="boomsLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/boom.wav" class="sound"></audio>
+          </div>
+          <div class="pads-group rides">
+            <div class="name">rides</div>
+            <input type="range" min="0.0" max="1.0" value=".5" class="level" id="ridesLevel" step=.1>
+            <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/ride.wav" class="sound"></audio>
+          </div>
+        </div>
+        <form id = newAudioForm>
+          <div class = "formWrapper">
+            <button type = "button" id = "closeFormBtn" onclick="closeForm()">X</button>
+            <br><div>New Audio</div>
+            <br><label for="audioName">Audio name:</label>
+            <input type="text" id="audioName" name="audioName" oninput="checkForm()"><br>
+            <br>File: <span id = "fileLabel">No File Selected</span><button onClick="expandFileForm()" id="uploadFileBtn" type ="button">Select Audio File</button><br>
+            <br><label for="colorPicker">Color:</label>
+            <input type="color" name="colorPicker" id = "colorPicker" oninput="checkForm()"><br>
+            <br><input type="submit" name="submit" id = "submit" onclick="addNewAudio()" disabled>
+            <div id = "addFileForm">
+              <input type="file" id="fileInput" accept="audio/*" name = "fileInput"/>
+              <!-- <div class = "draganddrop"><label for="file"><strong>Choose a file</strong> or drag it here</label> -->
+              <!-- <br><button class="addFileBtn" type="button">Upload</button></div> -->
+              <br><button id="fileInputDone" type="button" onclick="closeFileForm()">Done</button>
+            </div>
+
+          </div>
+        </form>
+          
+        <div id="pads-container">
+            <div class = "pads">
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+              <div class="tom"></div>
+            </div>
+            <div class = "pads">
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+              <div class="clap"></div>
+            </div>
+            <div class = "pads">
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+              <div class="kick"></div>
+            </div>
+            <div class = "pads">
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+              <div class="openhat"></div>
+            </div> 
+            <div class = "pads">
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+              <div class="boom"></div>
+            </div>
+            <div class = "pads">
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+              <div class="ride"></div>
+            </div>
+        </div> 
+      </div>
+    </section>
+    <script src="index.js"></script>
+  </body>
+</html>
