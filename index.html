@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./mystylesheet.css"/>
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>beepbop</title>
   </head>
@@ -20,6 +22,7 @@
           <div class="miscCtrl">
             <button id = "newBtn" onmouseover="showNewText()" onmouseout="hideNewText()" onclick="showNewAudioForm()">new</button>
             <div id = "new" onclick="showNewAudioForm()">new audio</div>
+            <button id = "recordBtn" >record</button>
             <input type="range" min="100" max="300" value="200" class="level" id="tempoEnabled" oninput="updateTempo(this.value);">
             <button id = "expandBtn" onmouseover="showExpandText()" onmouseout="hideExpandText()" onclick="expand()">+</button>
             <div id = "extend" onclick="expand()">extend</div>
@@ -61,21 +64,29 @@
         </div>
         <form id = newAudioForm>
           <div class = "formWrapper">
-            <button type = "button" id = "closeFormBtn" onclick="closeForm()">X</button>
+            <button type = "button" class = "closeFormBtn" onclick="closeNewAudio()">X</button>
             <br><div>New Audio</div>
             <br><label for="audioName">Audio name:</label>
             <input type="text" id="audioName" name="audioName" oninput="checkForm()"><br>
             <br>File: <span id = "fileLabel">No File Selected</span><button onClick="expandFileForm()" id="uploadFileBtn" type ="button">Select Audio File</button><br>
             <br><label for="colorPicker">Color:</label>
-            <input type="color" name="colorPicker" id = "colorPicker" oninput="checkForm()"><br>
-            <br><input type="submit" name="submit" id = "submit" onclick="addNewAudio()" disabled>
+            <input type="color" name="colorPicker" id = "colorPicker" value="#ffffff"><br>
+            <br><input type="submit" name="submit" id = "submit" onclick="addNewAudio()">
             <div id = "addFileForm">
-              <input type="file" id="fileInput" accept="audio/*" name = "fileInput"/>
+              <input type="file" id="fileInput" accept="audio/*" name = "fileInput" oninput="checkForm()"/>
               <!-- <div class = "draganddrop"><label for="file"><strong>Choose a file</strong> or drag it here</label> -->
               <!-- <br><button class="addFileBtn" type="button">Upload</button></div> -->
               <br><button id="fileInputDone" type="button" onclick="closeFileForm()">Done</button>
             </div>
-
+          </div>
+        </form>
+        <form id ="newBeatPreview">
+          <div class = "formWrapper">
+            <button type = "button" class = "closeFormBtn" onclick="closeNewRecording()">X</button>
+            <br><div>New Beat Preview</div>
+            <br><audio id = "audioPreview" controls></audio><br>
+            <br><label for="newBeat">Title: </label>
+            <input type="text" id="newBeat" name="newBeat" oninput="saveNewBeat()"><br>
           </div>
         </form>
           

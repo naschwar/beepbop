@@ -44,8 +44,69 @@ window.onload = (event) => {
         document.getElementById("fileLabel").innerHTML = document.getElementById("fileInput").value.split(/(\\|\/)/g).pop();
         document.getElementById("uploadFileBtn").innerHTML = "Change File";
     }, false);
+    if (!hasGetUserMedia()) {
+        document.getElementById("recordBtn").disabled = true;
+    }
 
 };
+if (hasGetUserMedia()) {
+    var recorder;
+    var audio_context
+    var audio_stream;
+    audio_context = new AudioContext;
+    const recordBtn = document.getElementById("recordBtn");
+    recordBtn.onclick = () => {
+        if (recordBtn.innerHTML=="record"){
+            recordBtn.innerHTML = "stop";
+            recordBtn.style.backgroundColor = "red";
+            startRecording();
+        }else{
+            recordBtn.innerHTML = "record";
+            recordBtn.style.backgroundColor = "#363e5c";
+            stopRecording(function(AudioBLOB){
+            var url = URL.createObjectURL(AudioBLOB);
+                document.getElementById("audioPreview").src = url;
+                document.getElementById("audioPreview").title =  "new-beat.wav"
+            }, "audio/wav");
+            document.getElementById("newBeatPreview").style.display = "inline-block";
+        }  
+    }  
+} else {
+    alert("Capturing audio is not supported by your browser");
+}
+
+function startRecording(){
+    const constraints = {
+        audio: true
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then((stream)=>{
+        var input = audio_context.createMediaStreamSource(stream);
+        audio_stream = stream;
+        recorder = new Recorder(input); 
+        recorder && recorder.record();
+    }).catch(function(err) {
+        console.log('The following getUserMedia error occurred: ' + err);
+     }); 
+}
+
+function stopRecording(callback, AudioFormat) {
+    recorder && recorder.stop();
+    audio_stream.getAudioTracks()[0].stop();
+    if(typeof(callback) == "function"){
+        recorder && recorder.exportWAV(function (blob) {
+            callback(blob);
+            recorder.clear();
+        }, (AudioFormat || "audio/wav"));
+    }
+
+}
+const saveNewBeat = () => {
+    const name = document.getElementById("newBeat").value;
+    if(name != ""){
+        document.getElementById("audioPreview").title = name + ".wav"
+    }
+}
+
 
 const updateTempo = (value) => {
     tempo = 400 - value;
@@ -74,7 +135,6 @@ const playBeat = (name) => {
 
 
 const iterate = (name, list) => {
-    console.log(list);
     list.forEach((el, i) => {
       setTimeout(() => {
         el.classList.add("active-pad");
@@ -100,7 +160,10 @@ const iterate = (name, list) => {
         clearInterval(musicPlaying);
         document.getElementById("playBtn").className = "fa fa-play";
         document.getElementById("tempoDisabled").id = "tempoEnabled";
+        document.getElementById("tempoEnabled").disabled = false;
+
     }else{
+        document.getElementById("tempoEnabled").disabled = true;
         document.getElementById("tempoEnabled").id = "tempoDisabled";
         // document.getElementById("tempo").min = document.getElementById("tempo").value;
         // document.getElementById("tempo").max = document.getElementById("tempo").value;
@@ -165,6 +228,7 @@ const expand = () => {
 
 const showNewAudioForm = () => {
     document.getElementById("newAudioForm").style.display = "inline-block";
+    document.getElementById("submit").disabled = true;    
 }
 
 function addNewAudio(e) {
@@ -233,8 +297,13 @@ const closeFileForm = (e) =>{
     document.getElementById("addFileForm").style.display = "none";
 }
 
-const closeForm = () => {
+const closeNewAudio = () => {
     document.getElementById("newAudioForm").style.display = "none";
+}
+
+const closeNewRecording = () => {
+    document.getElementById("newBeatPreview").style.display = "none";
+    document.getElementById("audioPreview").pause();
 }
 
 const updateVolume = (event) =>{
@@ -242,3 +311,15 @@ const updateVolume = (event) =>{
     const audio = document.querySelector("." + baseName + " > audio");
     audio.volume = event.target.value;
 }
+
+const checkForm = () => {
+    let files = document.getElementById("fileInput").files;
+    console.log(files)
+    if (files.length != 0){
+        document.getElementById("submit").disabled = false;
+    }
+}
+
+function hasGetUserMedia() {
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  }
