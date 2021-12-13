@@ -1,26 +1,21 @@
 const playBtn = document.querySelector(".playBtn");
 const stopBtn = document.querySelector(".stopBtn");
 let beatLength = 8;
+var uniforms;
+
 const form = document.getElementById('newAudioForm');
+form.addEventListener('submit', addNewAudio);
+
 var beatsList = []; 
 let tempo = 200;
 let isPlaying = false;
 
 window.onload = (event) => {
-    const sounds = document.querySelectorAll(".sound");
     const pads = document.querySelectorAll(".pads > div");
     pads.forEach((pad, index) => {
      let i = Math.floor(index/beatLength);
       pad.addEventListener("click", (p) => {
-        if(p.target.classList.contains("play")) {
-            p.target.classList.remove("play");
-          } else {
-            p.target.classList.add("play");
-          }
-        if(!isPlaying){
-            sounds[i].currentTime = 0;
-            sounds[i].play();
-        }
+        clickPadHandler(p, i);
       });
     });
     const tomPads = Array.from(document.querySelectorAll(".tom"));
@@ -29,7 +24,9 @@ window.onload = (event) => {
     const openhatPads = Array.from(document.querySelectorAll(".openhat"));
     const boomPads = Array.from(document.querySelectorAll(".boom"));
     const ridePads = Array.from(document.querySelectorAll(".ride"));
-    beatsList = [{beatName: "toms", beats: tomPads}, {beatName: "claps", beats: clapPads}, {beatName: "kicks", beats: kickPads}, {beatName: "open-hats", beats: openhatPads}, {beatName: "booms", beats: boomPads}, {beatName: "toms", beats: ridePads}]
+    const snarePads = Array.from(document.querySelectorAll(".snare"));
+
+    beatsList = [{beatName: "toms", beats: tomPads}, {beatName: "claps", beats: clapPads}, {beatName: "kicks", beats: kickPads}, {beatName: "openhats", beats: openhatPads}, {beatName: "booms", beats: boomPads}, {beatName: "rides", beats: ridePads}, {beatName: "snares", beats: snarePads}]
     for (let i = 0; i < beatsList.length; i ++){
         const level = document.getElementById(beatsList[i].beatName + "Level");
         level.addEventListener("change", updateVolume);
@@ -47,7 +44,6 @@ window.onload = (event) => {
     if (!hasGetUserMedia()) {
         document.getElementById("recordBtn").disabled = true;
     }
-
 };
 if (hasGetUserMedia()) {
     var recorder;
@@ -74,6 +70,31 @@ if (hasGetUserMedia()) {
 } else {
     alert("Capturing audio is not supported by your browser");
 }
+
+const clickPadHandler = (p, i) =>{
+    const sounds = document.querySelectorAll(".sound");
+    const col = audioPads.audioPads[i].color
+        let colorArr = col.slice(
+          col.indexOf("(") + 1, 
+          col.indexOf(")")
+        ).split(", ");
+    if(p.target.classList.contains("play")) {
+        p.target.classList.remove("play");
+        uniforms.u_ratios.value.x -= colorArr[0]/255;
+        uniforms.u_ratios.value.y -= colorArr[1]/255;
+        uniforms.u_ratios.value.z -= colorArr[2]/255;
+      } else {
+        p.target.classList.add("play");
+        uniforms.u_ratios.value.x += colorArr[0]/255;
+        uniforms.u_ratios.value.y += colorArr[1]/255;
+        uniforms.u_ratios.value.z += colorArr[2]/255;
+      }
+    if(!isPlaying){
+        sounds[i].currentTime = 0;
+        sounds[i].play();
+    }
+}
+
 
 function startRecording(){
     const constraints = {
@@ -203,21 +224,12 @@ const hideNewText = () => {
 
 const expand = () => {
     let padGroups = document.getElementsByClassName("pads");
-    const sounds = document.querySelectorAll(".sound");
     for (let i = 0; i < padGroups.length; i ++){
         const groupName = padGroups[i].firstElementChild.className;
         const el = document.createElement("div");
         el.className = groupName;
         el.addEventListener("click", (p) => {
-            if(p.target.classList.contains("play")) {
-                p.target.classList.remove("play");
-              } else {
-                p.target.classList.add("play");
-              }
-            if(!isPlaying){
-                sounds[i].currentTime = 0;
-                sounds[i].play();
-            }
+            clickPadHandler(p, i);
         });
         padGroups[i].appendChild(el);
         beatsList[i].beats.push(el);
@@ -235,7 +247,7 @@ function addNewAudio(e) {
     if (e.preventDefault){
         e.preventDefault();
     }
-    closeForm();
+    closeNewAudio();
     var audioName = document.getElementById("audioName").value;
     var audioColor = document.getElementById("colorPicker").value;
     var styleElement = document.createElement("style");
@@ -284,8 +296,12 @@ function addNewAudio(e) {
     document.getElementById("pads-container").appendChild(padsFragment);
     const newBeats = document.querySelectorAll("." + audioName);
     beatsList.push({beatName: audioName + "s", beats: newBeats});
+    audioPads.push({
+        audioName: audioName,
+        audioFile: audioFile,
+        color: audioColor
+    })
 }
-form.addEventListener('submit', addNewAudio);
 
 
 const expandFileForm = () =>{
