@@ -1,7 +1,7 @@
 var vis_container;
 var camera, scene, renderer, clock;
-vis_container = document.querySelector( '#vis-container' );
-const sizes = {
+vis_container = document.querySelector( '#vis-ui' );
+var sizes = {
     width: vis_container.clientWidth,
     height: vis_container.clientHeight
 }
@@ -49,7 +49,12 @@ function init() {
     }
 }
 
-function onWindowResize( event ) {
+function onWindowResize( ) {
+  sizes = {
+    width: vis_container.clientWidth,
+    height: vis_container.clientHeight
+}
+  console.log(sizes.width)
   renderer.setSize( sizes.width, sizes.height );
   uniforms.u_resolution.value.x = renderer.domElement.width;
   uniforms.u_resolution.value.y = renderer.domElement.height;

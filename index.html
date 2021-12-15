@@ -12,10 +12,9 @@
     <title>beepbop</title>
   </head>
   <body>
-      <header>
-        <h1>Beep Bop</h1>
-      </header>
+      
       <div id="app-container">
+      <button id="toggleBeatMakerBtn" onclick="hideBeatMaker()">hide</button>
       <section id = "beats-ui">
         <div class = controls>
           <div id = "playCtrl">
@@ -47,7 +46,7 @@
             <input type="color" name="colorPicker" id = "colorPicker" value="#ffffff"><br>
             <br><input type="submit" name="submit" id = "submit" onclick="addNewAudio()">
             <div id = "addFileForm">
-              <input type="file" id="fileInput" accept="audio/*" name = "fileInput" oninput="checkForm()"/>
+              <br><input type="file" id="fileInput" accept="audio/*" name = "fileInput" oninput="checkForm()"/>
               <!-- <div class = "draganddrop"><label for="file"><strong>Choose a file</strong> or drag it here</label> -->
               <!-- <br><button class="addFileBtn" type="button">Upload</button></div> -->
               <br><button id="fileInputDone" type="button" onclick="closeFileForm()">Done</button>
@@ -205,22 +204,22 @@
         return s;
     }
     
+    
     void main() {
         float sum = u_ratios.x + u_ratios.y + u_ratios.z;
         float ratioX = u_ratios.x/sum;
         float ratioY = u_ratios.y/sum;
         float ratioZ = u_ratios.z/sum;
-
         vec2 uv = (gl_FragCoord.xy - u_resolution*.5)/u_resolution.yy;
-        float noise = cnoise(uv);
 
-        pR(uv, cos(u_time*.15));
-        float circle = circleDF(cos(u_time*.1), sin(u_time*.2), uv); 
-         
+        float noise1 = cnoise(uv);
+        float noise2 = cnoise(uv*sin(u_time*.1));
+        float noise3 = cnoise(uv*cos(u_time*.1));
+        float swirl1 = clamp(length(mix(uv*tan(u_time*.3), vec2(2.*cnoise(vec2(u_time*.15 + uv.y,u_time*.05))), noise1)), .05, .9 +ratioX*noise1);
+        float swirl2 = clamp(length(mix(uv*tan(u_time*.3), vec2(2.*cnoise(vec2(u_time*.15 + uv.y,u_time*.05))), noise2)), .05, .9 + ratioY*noise1);
+        float swirl3 = clamp(length(mix(uv*tan(u_time*.3), vec2(2.*cnoise(vec2(u_time*.15 + uv.y,u_time*.05))), noise3)), .05, .9 + ratioZ*noise1);
 
-        float swirl = length(mix(uv*sin(u_time*.07), vec2(2.*cnoise(vec2(u_time*.15 + uv.y,u_time*.05))), noise));
-        gl_FragColor= vec4(ratioX*swirl+.25*abs(sin(u_time*ratioX)), ratioY*swirl+.25*abs(sin(u_time*ratioY)), ratioZ*swirl+.25*abs(sin(u_time*ratioZ)), 1.);
-
+        gl_FragColor= vec4(ratioX+smoothMod(noise1, swirl1, 3.), ratioY+ smoothMod(noise2,  swirl2, 4.), ratioZ+smoothMod(noise3,  swirl3, 5.), 1.);
       }
   </script>
   <script src ="vis.js" type="text/javascript"></script>

@@ -3,19 +3,15 @@
   }
   
 body {
-    background-color: rgb(101, 111, 134);
+    background-color: rgb(53, 55, 61);
     font-family: sans-serif;
     color: black;
     margin:0;
     padding: 0;
 }
 
-#synth{
-    width: 80%;
-    margin: 2% 10%;
-    padding: 2%;
-    background-color: rgb(68, 68, 66);
-    border-radius: 10px;
+#fileLabel{
+    padding: 0 2%;
 }
   
 header h1 {
@@ -27,25 +23,28 @@ header h1 {
 
 #app-container{
     display: flex;
+    height: 100vh;
+
 }
 
 #beats-ui{
     flex: 1;
-    border: 3px solid black;
-    background-color: rgba(162, 179, 145, 0.842);
-    box-shadow: 0 0 30px 20px inset rgb(120, 146, 84);
-    margin: 2% 1.5% 4% 1.5%;
-    padding: 2%;
+    background-color: rgba(0, 0, 0, 0.842);
+    margin: 0%;
 
 }
 
+#toggleBeatMakerBtn{
+    float: right;
+    margin: 2%;
+    position: fixed;
+    top: 10;
+}
+
 #vis-ui{
-    /* box-shadow: 0 0 20px 20px  blue; */
-    max-width: 50%;
     flex-grow: 1;
     flex: 1;
-    border: 3px solid black;
-    margin: 2% 1.5% 4% 1.5%;
+    margin: 0%;
 }
 
 #vis-container{
@@ -59,14 +58,13 @@ header h1 {
     margin: 0 3%;
     width: 94%;
     display: flex;
-    background: rgba(69, 77, 69, 0.782);
 }
 
 #pads-container { 
     padding: 2%;
     overflow: scroll;
     width: 80%;
-    background: rgba(0, 0, 0, 0.761);
+    background: rgb(0, 0, 0);
     padding-right: 4%;
 }
 
@@ -74,7 +72,7 @@ header h1 {
     padding: 2%;
     width: 20%;
     flex-grow: 30%;
-    background: rgba(39, 39, 39, 0.761);
+    background: rgba(29, 29, 29, 0.822);
 }
 
 .pads-group{
@@ -102,27 +100,27 @@ header h1 {
 }
 
 .tom, #tomsLevel{
-    background-color: rgb(94, 114, 62);
+    background-color: #7daad5;
 }
 .clap, #clapsLevel{
-    background-color: rgb(152, 208, 0);
+    background-color: #98D000;
   }
 .kick,  #kicksLevel{
-    background-color: rgb(244, 255, 36);
+    background-color: #F4FF24;
 }
 .openhat,  #openhatsLevel{
-    background-color: rgb(248, 189, 60);
+    background-color: #F8BD3C;
 }
 .boom,  #boomsLevel{
-    background-color: rgb(208, 129, 87);
+    background-color: #df9bcd;
 }
 
 .ride,  #ridesLevel{
-    background-color: rgb(148, 2, 124);
+    background-color: #EC1FFF;
 }
 
 .snare, #snaresLevel{
-    background-color: rgb(5, 61, 182);
+    background-color: #391FFF;
 }
 
 #addFileForm, #mainForm{
@@ -134,11 +132,11 @@ header h1 {
     position: relative;
 }
 
-#submit{
+#submit, #fileInputDone{
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    bottom: 5%;
+    bottom: 10%;
 }
 
 #newAudioForm, #addFileForm, #newBeatPreview{
@@ -174,7 +172,7 @@ header h1 {
     white-space: nowrap;
     height: 5vh;
     flex: 0 0 10%;
-    border-radius: 5px;
+    border-radius: 3px;
     opacity: .5;
     z-index: 1;
     margin: 2vh;
@@ -185,6 +183,9 @@ header h1 {
     margin-left: .5% !important;
     margin-right: .5% !important; */
     opacity: 1.0 !important;
+    border-radius: 10px !important;
+    border: 2px solid black;
+    box-shadow: 0 0 4px 6px inset rgb(12, 12, 12), 0 0 8px 8px inset rgb(100, 100, 100);
 }
 
 #playBtn{
@@ -317,7 +318,7 @@ button:hover{
     margin: 1% 3%;
     width: 94%;
     height: 12vh;
-    padding: 0% 2%;
+    padding: 5% 2% 0% 2%;
 }
 
 #expandBtn{
@@ -325,7 +326,7 @@ button:hover{
     float: right;
     font-size: 1.15em;
 }
-.controls button{
+.controls button, #toggleBeatMakerBtn{
     background-color: #363e5c;
     color: rgb(174, 174, 255);
     border-radius: 5px;

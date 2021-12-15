@@ -3,37 +3,37 @@ var audioPads = {
   {
       audioName: "tom",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/tom.wav",
-      color: "rgb(94, 114, 62)"
+      color: "0x7daad5"
   },
   {
       audioName: "clap",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/clap.wav",
-      color: "rgb(152, 208, 0)"
+      color: "0x98D000"
   },
   {
       audioName: "kick",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/kick.wav",
-      color: "rgb(244, 255, 36)"
+      color: "0xF4FF24"
   },
   {
       audioName: "openhat",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/openhat.wav",
-      color: "rgb(248, 189, 60)"
+      color: "0xF8BD3C"
   },
   {
       audioName: "boom",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/boom.wav",
-      color: "rgb(208, 129, 87)"
+      color: "0xdf9bcd"
   },
   {
       audioName: "ride",
       audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/ride.wav",
-      color: "rgb(148, 2, 124)"
+      color: "0xEC1FFF"
   },
   {
     audioName: "snare",
     audioFile: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/1147877/snare.wav",
-    color: "rgb(5, 61, 182)"
+    color: "0x391FFF"
 }
 ]
 }

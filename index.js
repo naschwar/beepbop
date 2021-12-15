@@ -74,20 +74,20 @@ if (hasGetUserMedia()) {
 const clickPadHandler = (p, i) =>{
     const sounds = document.querySelectorAll(".sound");
     const col = audioPads.audioPads[i].color
-        let colorArr = col.slice(
-          col.indexOf("(") + 1, 
-          col.indexOf(")")
-        ).split(", ");
+    const red = (col&0xFF0000) >> 16;
+    const green = (col&0xFF00) >> 8;
+    const blue = col&0xFF;
+
     if(p.target.classList.contains("play")) {
         p.target.classList.remove("play");
-        uniforms.u_ratios.value.x -= colorArr[0]/255;
-        uniforms.u_ratios.value.y -= colorArr[1]/255;
-        uniforms.u_ratios.value.z -= colorArr[2]/255;
+        uniforms.u_ratios.value.x -= red/255;
+        uniforms.u_ratios.value.y -= green/255;
+        uniforms.u_ratios.value.z -= blue/255;
       } else {
         p.target.classList.add("play");
-        uniforms.u_ratios.value.x += colorArr[0]/255;
-        uniforms.u_ratios.value.y += colorArr[1]/255;
-        uniforms.u_ratios.value.z += colorArr[2]/255;
+        uniforms.u_ratios.value.x += red/255;
+        uniforms.u_ratios.value.y += green/255;
+        uniforms.u_ratios.value.z += blue/255;
       }
     if(!isPlaying){
         sounds[i].currentTime = 0;
@@ -145,13 +145,20 @@ const addBtns = (padList) => {
   });
 }
 
-const playBeat = (name) => {
+const playBeat = (name, i) => {
     const query = "." + name + " > audio";
     const beat = document.querySelector(query);
+    const col = audioPads.audioPads[i].color
     if(beat){
         beat.currentTime = 0;
         beat.play();
     }
+    const red = (col&0xFF0000) >> 16;
+    const green = (col&0xFF00) >> 8;
+    const blue = col&0xFF;
+    uniforms.u_ratios.value.x += red/255;
+    uniforms.u_ratios.value.y += green/255;
+    uniforms.u_ratios.value.z += blue/255;
 }
 
 
@@ -160,7 +167,7 @@ const iterate = (name, list) => {
       setTimeout(() => {
         el.classList.add("active-pad");
         if(el.classList.contains("play")) {
-            playBeat(name);
+            playBeat(name, Math.floor(i/beatLength));
         }
         setTimeout(() => {
           el.classList.remove("active-pad");
@@ -233,7 +240,6 @@ const expand = () => {
         });
         padGroups[i].appendChild(el);
         beatsList[i].beats.push(el);
-
     }
     beatLength ++;
 }
@@ -242,11 +248,8 @@ const showNewAudioForm = () => {
     document.getElementById("newAudioForm").style.display = "inline-block";
     document.getElementById("submit").disabled = true;    
 }
-
 function addNewAudio(e) {
-    if (e.preventDefault){
-        e.preventDefault();
-    }
+    e.preventDefault();
     closeNewAudio();
     var audioName = document.getElementById("audioName").value;
     var audioColor = document.getElementById("colorPicker").value;
@@ -277,7 +280,6 @@ function addNewAudio(e) {
         // el.style.backgroundColor = audioColor;
         el.addEventListener("click", (p) => {
             if(!isPlaying){
-                console.log(audio);
                 audio.currentTime = 0;
                 audio.play();
             }
@@ -295,8 +297,8 @@ function addNewAudio(e) {
 
     document.getElementById("pads-container").appendChild(padsFragment);
     const newBeats = document.querySelectorAll("." + audioName);
-    beatsList.push({beatName: audioName + "s", beats: newBeats});
-    audioPads.push({
+    beatsList.push({beatName: audioName + "s", beats: Array.from(newBeats)});
+    audioPads.audioPads.push({
         audioName: audioName,
         audioFile: audioFile,
         color: audioColor
@@ -330,7 +332,6 @@ const updateVolume = (event) =>{
 
 const checkForm = () => {
     let files = document.getElementById("fileInput").files;
-    console.log(files)
     if (files.length != 0){
         document.getElementById("submit").disabled = false;
     }
@@ -338,4 +339,20 @@ const checkForm = () => {
 
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-  }
+}
+
+function hideBeatMaker() {
+    const toggleBtn = document.getElementById("toggleBeatMakerBtn");
+    const beats_ui = document.getElementById("beats-ui");
+    const vis_ui = document.getElementById("vis-ui");
+    if(toggleBtn.innerHTML == "hide"){
+        toggleBtn.innerHTML = "show";
+        beats_ui.style.display = "none";
+        vis_ui.style.width = "100%";
+    }else{
+        toggleBtn.innerHTML = "hide";
+        beats_ui.style.display = "block";
+        vis_ui.style.width = "50%";
+    }
+    onWindowResize();
+}
